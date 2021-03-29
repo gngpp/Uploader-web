@@ -2,11 +2,21 @@
   <div id="app">
     <el-container class="my-container">
       <el-header class="my-header">
-        <span style="color: aliceblue;font-size: x-large">MyUploader</span>
+        <span style="color: #fdfdfd;font-size: x-large">Uploader</span>
       </el-header>
       <el-container>
         <el-aside>
-          <el-menu :default-active="defaultActive" style="height: 100%">
+          <el-menu
+            :default-active="defaultActive"
+            style="height: 100%"
+            background-color="#2D3A4A"
+            text-color="#fff"
+            active-text-color="#ffd04b"
+          >
+            <el-menu-item index="uploaderRecord" @click="redirectUrl('/uploaderRecord')">
+              <i class="el-icon-menu"></i>
+              <span slot="title">上传记录</span>
+            </el-menu-item>
             <el-menu-item index="singleFileUpload" @click="redirectUrl('/singleFileUpload')">
               <i class="el-icon-menu"></i>
               <span slot="title">单文件上传</span>
@@ -75,7 +85,7 @@
     height: 100%;
   }
   .my-header {
-    background-color: deepskyblue;
+    background-color: #2d3a49;
     height: 20px;
     font-size: large;
     display: flex;
