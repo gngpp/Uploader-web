@@ -11,8 +11,8 @@
       :http-request='addFileToFormData'
       multiple
     >
-      <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-      <el-button style="margin-left: 10px;" size="small" type="success" @click="upload">上传到服务器</el-button>
+      <el-button slot="trigger" size="small" type="primary" plain>选取文件</el-button>
+      <el-button style="margin-left: 10px;" size="small" type="success" @click="upload" plain>上传到服务器</el-button>
     </el-upload>
     <div>
       <p>上传进度</p>
@@ -36,7 +36,7 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <el-button type="danger" @click="deleteElement(scope.row.id)">删除</el-button>
+          <el-button type="danger" @click="deleteElement(scope.row.id)" plain>删除</el-button>
         </template>
       </el-table-column>
     </el-table>

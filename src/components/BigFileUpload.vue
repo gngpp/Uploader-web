@@ -9,7 +9,7 @@
         :BeforeUpload="beforeUpload"
         @inputUploader="inputUploader"
     />
-    <el-button type="primary" id="browse_button">选择多个文件</el-button>
+    <el-button type="primary" id="browse_button" plain>选择多个文件</el-button>
     <br/>
     <el-table
       :data="tableData"
@@ -39,12 +39,12 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <el-button type="danger" @click="deleteFile(scope.row.id)">删除</el-button>
+          <el-button type="danger" @click="deleteFile(scope.row.id)" plain>删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <br/>
-    <el-button type="danger" @click="up.start()">开始上传</el-button>
+    <el-button type="danger" @click="up.start()" plain>开始上传</el-button>
   </div>
 </template>
 
