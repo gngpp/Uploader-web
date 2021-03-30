@@ -130,12 +130,17 @@
             message: '批量上传成功',
             type: 'success'
           });
-          this.fileList.forEach(e=>{
-            console.log(e)
-          })
           this.fileFormData.delete('fileList')
           this.fileList = []
           this.$refs.upload.clearFiles();
+          this.percentage = 0;
+        }).catch(e=>{
+          this.$notify({
+            title: '错误',
+            message: '有文件已经存在',
+            type: 'error'
+          });
+          this.percentage = 0;
         })
       },
       handleRemove(file, fileList) {
