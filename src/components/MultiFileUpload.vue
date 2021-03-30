@@ -3,14 +3,14 @@
     <uploader
       ref="uploader"
       browse_button="browse_button"
-      :url="server_config.url+'/File/'"
+      :url="server_config.url+'/File'"
       :filters="{prevent_duplicates:true}"
       @inputUploader="inputUploader"
     />
     <el-tag type="warning">不允许选取重复文件</el-tag>
     <br/>
     <br/>
-    <el-button type="primary" id="browse_button">选择多个文件</el-button>
+    <el-button type="primary" id="browse_button" plain>选择多个文件</el-button>
     <br/>
     <el-table
       :data="tableData"
@@ -44,7 +44,7 @@
       </el-table-column>
     </el-table>
     <br/>
-    <el-button type="danger" @click="up.start()">开始上传</el-button>
+    <el-button type="danger" @click="up.start()" plain>开始上传</el-button>
   </div>
 </template>
 
