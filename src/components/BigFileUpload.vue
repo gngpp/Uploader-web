@@ -2,7 +2,7 @@
   <div>
     <uploader
         browse_button="browse_button"
-        :url="server_config.url+'/BigFile'"
+        :url="server_config.url+'/big_file'"
         chunk_size="2MB"
         :filters="{prevent_duplicates:true}"
         :FilesAdded="filesAdded"
@@ -71,7 +71,7 @@
           this.files.forEach((e) => {
             this.tableData.push({
               name: e.name,
-              size: e.size,
+              size: this.renderSize(e.size),
               status: e.status,
               id: e.id,
               percent: e.percent
@@ -82,6 +82,19 @@
       }
     },
     methods: {
+      renderSize(value){
+        if(null==value||value==''){
+          return "0 Bytes";
+        }
+        var unitArr = new Array("Bytes","KB","MB","GB","TB","PB","EB","ZB","YB");
+        var index=0,
+          srcsize = parseFloat(value);
+        index=Math.floor(Math.log(srcsize)/Math.log(1024));
+        var size =srcsize/Math.pow(1024,index);
+        //  保留的小数位数
+        size=size.toFixed(2);
+        return size+unitArr[index];
+      },
       inputUploader(up) {
         this.up = up;
         this.files = up.files;

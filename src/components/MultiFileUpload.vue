@@ -1,17 +1,23 @@
 <template>
   <div>
-    <uploader
-      ref="uploader"
-      browse_button="browse_button"
-      :url="server_config.url+'/File'"
-      :filters="{prevent_duplicates:true}"
-      @inputUploader="inputUploader"
-    />
-    <el-tag type="warning">不允许选取重复文件</el-tag>
-    <br/>
-    <br/>
-    <el-button type="primary" id="browse_button" plain>选择多个文件</el-button>
-    <br/>
+
+    <el-upload
+      class="upload-demo"
+      ref="upload"
+      action="https://jsonplaceholder.typicode.com/posts/"
+      :on-preview="handlePreview"
+      :on-remove="handleRemove"
+      :show-file-list="false"
+      :http-request='addFileToFormData'
+      multiple
+    >
+      <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+      <el-button style="margin-left: 10px;" size="small" type="success" @click="upload">上传到服务器</el-button>
+    </el-upload>
+    <div>
+      <p>上传进度</p>
+      <el-progress :percentage="percentage" ></el-progress>
+    </div>
     <el-table
       :data="tableData"
       style="width: 100%; margin: 10px 10px;">
@@ -28,71 +34,123 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="状态">
-        <template slot-scope="scope">
-          <span v-if="scope.row.status === 1">准备上传</span>
-          <span v-if="scope.row.status === 4" style="color: brown">上传失败</span>
-          <span v-if="scope.row.status === 5" style="color: chartreuse">已上传</span>
-          <el-progress v-if="scope.row.status === 2" :text-inside="true" :stroke-width="20" :percentage="scope.row.percent"></el-progress>
-        </template>
-      </el-table-column>
-      <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <el-button type="danger" @click="deleteFile(scope.row.id)">删除</el-button>
+          <el-button type="danger" @click="deleteElement(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <br/>
-    <el-button type="danger" @click="up.start()" plain>开始上传</el-button>
   </div>
 </template>
 
 <script>
   import Uploader from './Uploader'
+  import axios from "axios";
   export default {
     name: "MultiFileUpload",
     data() {
       return {
-        files: [],
-        up: {},
-        server_config: this.global.server_config,
-        tableData: []
+        tableData: [],
+        fileList:[],
+        fileFormData: null, // 将要上传的formdata数据
+        percentage: 0, // 存放上传百分比
       }
     },
+    created() {
+      this.fileFormData = new FormData();
+    },
     watch: {
-      files: {
+      fileList: {
         handler() {
           this.tableData = [];
-          this.files.forEach((e) => {
+          this.fileList.forEach((e) => {
             this.tableData.push({
               name: e.name,
-              size: e.size,
-              status: e.status,
-              id: e.id,
-              percent: e.percent
+              size: this.renderSize(e.size),
+              id: e.uid
             });
           });
-        },
-        deep: true
+        }
       }
     },
     methods: {
-      inputUploader(up) {
-        this.up = up;
-        this.files = up.files;
+      renderSize(value) {
+        if (null == value || value == '') {
+          return "0 Bytes";
+        }
+        var unitArr = new Array("Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
+        var index = 0,
+          srcsize = parseFloat(value);
+        index = Math.floor(Math.log(srcsize) / Math.log(1024));
+        var size = srcsize / Math.pow(1024, index);
+        //  保留的小数位数
+        size = size.toFixed(2);
+        return size + unitArr[index];
       },
-      deleteFile(id) {
-        let file = this.up.getFile(id);
-        this.up.removeFile(file);
+      addFileToFormData(file) {
+        /*
+         * 每选一个文件都会执行一次该函数
+         * 也就把每个文件都添加到 this.fileFormData 里面
+         * 在添加之前也可以加上自己的一些判断逻辑
+         * 当然也可以直接利用 el-upload 组件自带的限制功能
+        */
+        this.fileList.push(file.file)
+        //this.fileFormData.append('fileList', file.file);
+      },
+      uploadProgress(progressEvent){
+        /*
+         * progressEvent.loaded :已上传量
+         * progressEvent.total :上传的总大小
+        */
+        const p = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
+        this.percentage = p;
+      },
+      upload() {
+        if (this.fileList.length === 0) {
+          this.$notify({
+            title: '警告',
+            message: '当前没有文件可上传',
+            type: 'warning'
+          });
+          return
+        }
+        this.fileList.forEach(e=>{
+          this.fileFormData.append('fileList', e);
+        })
+        const formData = this.fileFormData;
+        const fn = this.uploadProgress; // 我们自己处理上传进度的函数
+        axios.post('http://localhost:8080/multi_file', formData ,{
+          headers:{
+            'Content-Type': 'multipart/form-data'
+          },
+          onUploadProgress: fn
+        }).then(res => {
+          this.$notify({
+            title: '成功',
+            message: '批量上传成功',
+            type: 'success'
+          });
+          this.fileList.forEach(e=>{
+            console.log(e)
+          })
+          this.fileFormData.delete('fileList')
+          this.fileList = []
+          this.$refs.upload.clearFiles();
+        })
+      },
+      handleRemove(file, fileList) {
+        this.fileList = this.fileList.filter(value => {
+          return value.uid !== file.uid
+        })
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      deleteElement(uid) {
+        this.fileList = this.fileList.filter(value => {
+          return value.uid !== uid
+        })
       }
-    },
-    components: {
-      'uploader': Uploader
     }
   }
 </script>
-
-<style scoped>
-
-</style>

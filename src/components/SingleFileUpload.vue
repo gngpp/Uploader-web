@@ -2,7 +2,7 @@
     <div>
       <uploader
         browse_button="browse_button"
-        :url="server_config.url+'/File'"
+        :url="server_config.url+'/file'"
         :multi_selection="false"
         :FilesAdded="filesAdded"
         :filters="{
@@ -14,9 +14,9 @@
         }"
         @inputUploader="inputUploader"
       />
-      <el-button id="browse_button" type="primary">选择文件</el-button>
+      <el-button id="browse_button" type="primary" plain>选择文件</el-button>
       <span v-for="file in files">{{file.name}}</span>
-      <el-button type="danger" @click="uploadStart()">开始上传</el-button>
+      <el-button type="danger" @click="uploadStart()" plain>开始上传</el-button>
 
       <el-dialog title="正在上传" :visible.sync="dialogTableVisible">
         <el-progress v-if="files.length>0" :text-inside="true" :stroke-width="20" :percentage="files[0].percent"></el-progress>
@@ -57,6 +57,19 @@
       }
     },
     methods: {
+      renderSize(value){
+        if(null==value||value==''){
+          return "0 Bytes";
+        }
+        var unitArr = new Array("Bytes","KB","MB","GB","TB","PB","EB","ZB","YB");
+        var index=0,
+          srcsize = parseFloat(value);
+        index=Math.floor(Math.log(srcsize)/Math.log(1024));
+        var size =srcsize/Math.pow(1024,index);
+        //  保留的小数位数
+        size=size.toFixed(2);
+        return size+unitArr[index];
+      },
       /**
        * setting single file limit
        * @param up

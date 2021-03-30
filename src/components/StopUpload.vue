@@ -2,7 +2,7 @@
   <div>
     <uploader
       browse_button="browse_button"
-      :url="server_config.url+'/BigFile'"
+      :url="server_config.url+'/big_file'"
       chunk_size="2MB"
       :max_retries="3"
       :filters="{prevent_duplicates:true}"
@@ -15,7 +15,7 @@
     <el-tag type="warning">自动重传三次</el-tag>
     <br/>
     <br/>
-    <el-button type="primary" id="browse_button">选择多个文件</el-button>
+    <el-button type="primary" id="browse_button" plain>选择多个文件</el-button>
     <br/>
     <el-table
       :data="tableData"
@@ -45,13 +45,13 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <el-button type="danger" @click="deleteFile(scope.row.id)">删除</el-button>
+          <el-button type="danger" @click="deleteFile(scope.row.id)" plain>删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <br/>
-    <el-button :disabled="uploading" type="danger" @click="uploadStart()">开始上传</el-button>
-    <el-button :disabled="!uploading" type="warring" @click="uploadStop()">暂停上传</el-button>
+    <el-button :disabled="uploading" type="danger" @click="uploadStart()" plain>开始上传</el-button>
+    <el-button :disabled="!uploading" type="warring" @click="uploadStop()" plain>暂停上传</el-button>
   </div>
 </template>
 
@@ -80,7 +80,7 @@
           this.files.forEach((e) => {
             this.tableData.push({
               name: e.name,
-              size: e.size,
+              size: this.renderSize(e.size),
               status: e.status,
               id: e.id,
               percent: e.percent
@@ -91,6 +91,19 @@
       }
     },
     methods: {
+      renderSize(value){
+        if(null==value||value==''){
+          return "0 Bytes";
+        }
+        var unitArr = new Array("Bytes","KB","MB","GB","TB","PB","EB","ZB","YB");
+        var index=0,
+          srcsize = parseFloat(value);
+        index=Math.floor(Math.log(srcsize)/Math.log(1024));
+        var size =srcsize/Math.pow(1024,index);
+        //  保留的小数位数
+        size=size.toFixed(2);
+        return size+unitArr[index];
+      },
       inputUploader(up) {
         this.up = up;
         this.files = up.files;
