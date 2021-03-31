@@ -31,9 +31,10 @@
       <el-table-column label="操作" width="100">
         <template slot-scope="scope">
           <el-button
+            plain
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            @click="open(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -109,8 +110,6 @@ export default {
           message: '删除成功',
           type: 'success'
         });
-        console.log(index)
-        console.log(this.pageNumber -1 )
         if (index == 0) {
           this.pageNumber -1
           this.changePage(this.pageNumber -1 )
@@ -123,6 +122,20 @@ export default {
           type: 'error'
         });
       })
+    },
+    open(index, row) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(res => {
+        this.handleDelete(index, row)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   }
 }
