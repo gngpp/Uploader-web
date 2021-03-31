@@ -31,7 +31,7 @@
         <template slot-scope="scope">
           <span v-if="scope.row.status === -1">正在计算MD5</span>
           <span v-if="scope.row.status === 1">MD5计算完成，准备上传</span>
-          <span v-if="scope.row.status === 4" style="color: brown">上传失败</span>
+          <span v-if="scope.row.status === 4" style="color: brown">请勿重复上传，该文件已存在</span>
           <span v-if="scope.row.status === 5" style="color: chartreuse">已上传</span>
           <el-progress v-if="scope.row.status === 2" :text-inside="true" :stroke-width="20" :percentage="scope.row.percent"></el-progress>
         </template>
