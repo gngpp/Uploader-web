@@ -14,6 +14,7 @@
     "css-loader": "^1.0.0",
     "element-ui": "^2.4.8",
     "file-loader": "^2.0.0",
+    "moment": "^2.29.1",
     "npm": "^6.4.1",
     "plupload": "^2.3.6",
     "url-parse": ">=1.4.3",
