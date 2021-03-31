@@ -2,7 +2,7 @@
   <div>
     <uploader
       browse_button="browse_button"
-      :url="server_config.url+'/big_file'"
+      :url="server_config.url+'/upload/big_file'"
       chunk_size="2MB"
       :max_retries="3"
       :filters="{prevent_duplicates:true}"

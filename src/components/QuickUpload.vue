@@ -2,7 +2,7 @@
   <div>
     <uploader
       browse_button="browse_button"
-      :url="server_config.url+'/big_file'"
+      :url="server_config.url+'/upload/big_file'"
       chunk_size="2MB"
       :filters="{prevent_duplicates:true}"
       :FilesAdded="filesAdded"
@@ -118,18 +118,19 @@
       },
       uploadStart() {
         let count = 0, size = this.files.length;
-        this.files.forEach((e) => {
-          if (e.status == 1) {
-            this.$http.get(this.server_config.url+'/check_md5/?md5='+e.md5)
+        this.files.forEach((file) => {
+          if (file.status == 1) {
+            this.$http.get(this.server_config.url+'/upload/check_md5/?md5='+file.md5)
               .then((response) => {
-                count += 1;
+                if (file.status == 1) {
+                  count += 1;
+                }
                 console.log(count);
+                console.log(size)
                 if (!response.data) {
-                  e.status = 5;
+                  file.status = 5;
                 }
-                if (count == size){
-                  this.up.start();
-                }
+                this.up.start();
               });
           }
         });

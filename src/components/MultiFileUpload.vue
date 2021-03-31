@@ -119,7 +119,7 @@
         })
         const formData = this.fileFormData;
         const fn = this.uploadProgress; // 我们自己处理上传进度的函数
-        axios.post('http://localhost:8080/multi_file', formData ,{
+        axios.post('http://localhost:8080/upload/multi_file', formData ,{
           headers:{
             'Content-Type': 'multipart/form-data'
           },

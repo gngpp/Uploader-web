@@ -2,7 +2,7 @@
     <div>
       <uploader
         browse_button="browse_button"
-        :url="server_config.url+'/file'"
+        :url="server_config.url+'/upload/single_file'"
         :multi_selection="false"
         :FilesAdded="filesAdded"
         :filters="{

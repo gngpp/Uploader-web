@@ -2,8 +2,9 @@
   <div>
     <uploader
       browse_button="browse_button"
-      :url="server_config.url+'/file'"
+      :url="server_config.url+'/upload/single_file'"
       :FilesAdded="filesAdded"
+      :error="handle"
       @inputUploader="inputUploader"
     />
     <el-button id="browse_button" type="primary" plain>选择图片</el-button>
@@ -60,6 +61,14 @@
       }
     },
     methods: {
+      handle(file) {
+        console.log(file)
+        this.$notify({
+          title: '错误',
+          message: '图片已经存在',
+          type: 'error'
+        });
+      },
       renderSize(value){
         if(null==value||value==''){
           return "0 Bytes";
