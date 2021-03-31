@@ -140,6 +140,7 @@
             message: '有文件已经存在',
             type: 'error'
           });
+          this.fileFormData.delete('fileList')
           this.percentage = 0;
         })
       },
